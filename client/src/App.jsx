@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 import HeroSection from "./pages/student/HeroSection";
 import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
@@ -16,6 +18,7 @@ import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
 import CourseProgress from "./pages/student/CourseProgress";
 import SearchPage from "./pages/student/SearchPage";
+import Service from "./pages/Service";
 import {
   AdminRoute,
   AuthenticatedUser,
@@ -23,12 +26,17 @@ import {
 } from "./components/ProtectedRoutes";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
+import Certification from "./pages/Certification";
+import TestQuiz from './pages/TestQuiz';
+import Certificate from './pages/Certificate';
+import PageNotFound from "./components/PageNotFound";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     children: [
+      
       {
         path: "/",
         element: (
@@ -39,12 +47,16 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "login",
-        element: (
-          <AuthenticatedUser>
-            <Login />
-          </AuthenticatedUser>
-        ),
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "my-learning",
@@ -61,6 +73,22 @@ const appRouter = createBrowserRouter([
             <Profile />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/certification",
+        element: <Certification />
+      },
+      {
+        path: "/test-quiz/:subject",
+        element: <TestQuiz />
+      },
+      {
+        path: "/certificate/:subject",
+        element: <Certificate />
+      },
+      {
+        path: "/pages/FooterPages.jsx/Service.jsx",
+        element: <Service />,
       },
       {
         path: "course/search",
@@ -88,6 +116,7 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
 
       // admin routes start from here
       {
@@ -123,6 +152,10 @@ const appRouter = createBrowserRouter([
             element: <EditLecture />,
           },
         ],
+      },
+      {
+        path: "*",
+        element: <PageNotFound/>
       },
     ],
   },

@@ -25,16 +25,14 @@ const Login = () => {
     name: "",
     email: "",
     password: "",
+    role: "user",
   });
-  const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+  const [loginInput, setLoginInput] = useState({ email: "", password: "" , role: "user"});
 
   const [
     registerUser,
     {
-      data: registerData,
-      error: registerError,
       isLoading: registerIsLoading,
-      isSuccess: registerIsSuccess,
     },
   ] = useRegisterUserMutation();
   const [
@@ -46,6 +44,7 @@ const Login = () => {
       isSuccess: loginIsSuccess,
     },
   ] = useLoginUserMutation();
+
   const navigate = useNavigate();
 
   const changeInputHandler = (e, type) => {
@@ -64,26 +63,17 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if(registerIsSuccess && registerData){
-      toast.success(registerData.message || "Signup successful.")
-    }
-    if(registerError){
-      toast.error(registerError.data.message || "Signup Failed");
-    }
     if(loginIsSuccess && loginData){
-      toast.success(loginData.message || "Login successful.");
+      toast.success(loginData?.message || "Login successful.");
       navigate("/");
     }
     if(loginError){ 
-      toast.error(loginError.data.message || "login Failed");
+      toast.error(loginError?.data?.message || "login Failed");
     }
   }, [
     loginIsLoading,
-    registerIsLoading,
     loginData,
-    registerData,
     loginError,
-    registerError,
   ]);
 
   return (
@@ -98,7 +88,7 @@ const Login = () => {
             <CardHeader>
               <CardTitle>Signup</CardTitle>
               <CardDescription>
-                Create a new account and click signup when you're done.
+                Create a new account and click signup when you are done.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -135,6 +125,17 @@ const Login = () => {
                   required="true"
                 />
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="username">Role </Label>
+                <Input
+                  type="text"
+                  name="role"
+                  value={signupInput.role}
+                  onChange={(e) => changeInputHandler(e, "signup")}
+                  placeholder="Eg. xyz"
+                  required="true"
+                />
+              </div>
             </CardContent>
             <CardFooter>
               <Button
@@ -158,7 +159,7 @@ const Login = () => {
             <CardHeader>
               <CardTitle>Login</CardTitle>
               <CardDescription>
-                Login your password here. After signup, you'll be logged in.
+                Login your password here. After signup, you will be logged in.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -184,12 +185,25 @@ const Login = () => {
                   required="true"
                 />
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="new">Role </Label>
+                <Input
+                  type="text"
+                  name="role"
+                  value={loginInput.role}
+                  onChange={(e) => changeInputHandler(e, "login")}
+                  placeholder="Eg. xyz"
+                  required="true"
+                />
+              </div>
             </CardContent>
+            <div className="flex justify-between">
+
             <CardFooter>
               <Button
                 disabled={loginIsLoading}
                 onClick={() => handleRegistration("login")}
-              >
+                >
                 {loginIsLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
@@ -200,6 +214,12 @@ const Login = () => {
                 )}
               </Button>
             </CardFooter>
+            <CardFooter>
+              <Button variant="outline" onClick={() => navigate("/forgot-password")}>
+                Forgot Password
+              </Button>
+            </CardFooter>
+                </div>
           </Card>
         </TabsContent>
       </Tabs>

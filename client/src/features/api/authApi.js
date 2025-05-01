@@ -37,13 +37,21 @@ export const authApi = createApi({
                 url:"logout",
                 method:"GET"
             }),
-            async onQueryStarted(_, {queryFulfilled, dispatch}) {
+            async onQueryStarted(_, {dispatch}) {
                 try { 
                     dispatch(userLoggedOut());
                 } catch (error) {
                     console.log(error);
                 }
             }
+        }),
+        resetPassword: builder.mutation({
+            query: (data) => ({
+                url:"reset-password",
+                method:"POST",
+                body: data,
+                credentials: 'include'
+            })
         }),
         loadUser: builder.query({
             query: () => ({
@@ -54,6 +62,8 @@ export const authApi = createApi({
                 try {
                     const result = await queryFulfilled;
                     dispatch(userLoggedIn({user:result.data.user}));
+                   
+                    console.log(result)
                 } catch (error) {
                     console.log(error);
                 }
@@ -73,6 +83,7 @@ export const {
     useRegisterUserMutation,
     useLoginUserMutation,
     useLogoutUserMutation,
+    useResetPasswordMutation,
     useLoadUserQuery,
     useUpdateUserMutation
 } = authApi;

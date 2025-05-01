@@ -2,6 +2,7 @@ import {User} from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
+import jwt from "jsonwebtoken";
 
 export const register = async (req,res) => {
     try {
@@ -85,10 +86,52 @@ export const logout = async (_,res) => {
         }) 
     }
 }
+
+export const resetPassword = async (req,res) => {
+    try {
+        const {email, password} = req.body;
+        
+        if(!email || !password){
+            return res.status(400).json({
+                success:false,
+                message:"Email and password are required."
+            })
+        }
+
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"User not found"
+            })
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.findByIdAndUpdate(user._id, {password: hashedPassword});
+
+        return res.status(200).json({
+            success:true,
+            message:"Password reset successfully."
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"Failed to reset password"
+        })
+    }
+}
 export const getUserProfile = async (req,res) => {
     try {
         const userId = req.id;
-        const user = await User.findById(userId).select("-password").populate("enrolledCourses");
+        const user = await User.findById(userId)
+            .select("-password")
+            .populate({
+                path: "enrolledCourses",
+                select: "courseTitle courseDescription courseThumbnail coursePrice",
+                model: "Course"
+            });
+            
         if(!user){
             return res.status(404).json({
                 message:"Profile not found",
