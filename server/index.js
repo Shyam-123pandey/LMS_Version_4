@@ -36,9 +36,9 @@ app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
 app.use("/api/v1/progress", courseProgressRoute);
 
-app.use(express.static(path.join(_dirname, "/client/dist")));
+app.use(express.static(path.join(_dirname, "../client/dist")));
 app.get("*", (req,res) => {
-    res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
+    res.sendFile(path.resolve(_dirname, "../client/dist/index.html"));
 })
  
  
